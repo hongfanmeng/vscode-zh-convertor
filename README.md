@@ -1,4 +1,4 @@
-#
+# vscode-zh-convertor
 
 **vscode 繁簡轉換插件**：一個使用 opencc 實現的 vscode 繁簡轉換插件。
 
