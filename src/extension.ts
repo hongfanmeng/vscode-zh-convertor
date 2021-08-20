@@ -1,26 +1,44 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import { OpenCC } from "opencc";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-	
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscode-zh-convertor" is now active!');
+const COMMANDS: { command: string; configFile: string }[] = [
+  {
+    command: "vscode-zh-convertor.zh-hans-to-zh-hant",
+    configFile: "s2t.json",
+  },
+  {
+    command: "vscode-zh-convertor.zh-hant-to-zh-hans",
+    configFile: "t2s.json",
+  },
+];
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('vscode-zh-convertor.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from vscode-zh-convertor!');
-	});
+function process(textEditor: vscode.TextEditor, configFile: string) {
+  let document: vscode.TextDocument = textEditor.document;
+  let selection: vscode.Selection | vscode.Range = textEditor.selection;
+  if (selection.isEmpty) {
+    const fullText = document.getText();
+    selection = new vscode.Range(
+      document.positionAt(0),
+      document.positionAt(fullText.length - 1)
+    );
+  }
 
-	context.subscriptions.push(disposable);
+  const converter: OpenCC = new OpenCC(configFile);
+  let text = document.getText(selection);
+  const result = converter.convertSync(text);
+  textEditor.edit((builder) => {
+    builder.replace(selection, result);
+  });
 }
 
-// this method is called when your extension is deactivated
+export function activate(context: vscode.ExtensionContext) {
+  COMMANDS.forEach((item) => {
+    context.subscriptions.push(
+      vscode.commands.registerTextEditorCommand(item.command, (textEditor) => {
+        process(textEditor, item.configFile);
+      })
+    );
+  });
+}
+
 export function deactivate() {}
