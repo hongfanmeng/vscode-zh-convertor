@@ -1,5 +1,11 @@
 {
   "name": "vscode-zh-convertor",
+  "publisher": "StevenH",
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hongfanmeng/vscode-zh-convertorsudo a"
+  },
   "displayName": "繁簡轉換",
   "description": "一個使用opencc的vscode 繁簡轉換插件",
   "version": "0.0.1",
