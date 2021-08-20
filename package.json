@@ -8,7 +8,7 @@
   },
   "displayName": "繁簡轉換",
   "description": "一個使用opencc的vscode 繁簡轉換插件",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.59.0"
   },
